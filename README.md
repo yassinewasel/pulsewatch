@@ -34,7 +34,8 @@ Start the development server:
 uvicorn app.main:app --reload
 ```
 
-The health endpoint is available at <http://127.0.0.1:8000/health>.
+The liveness endpoint is available at <http://127.0.0.1:8000/health>. The readiness
+endpoint at <http://127.0.0.1:8000/ready> also verifies database connectivity.
 
 ## Docker Compose
 
