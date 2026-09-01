@@ -12,11 +12,15 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Copy the example environment file and adjust the local PostgreSQL connection if needed:
+Copy the example environment file:
 
 ```bash
 cp .env.example .env
 ```
+
+The example uses a local SQLite database so the application works without a separate
+database server. To use PostgreSQL, set `DATABASE_URL` to a SQLAlchemy PostgreSQL URL,
+for example `postgresql+psycopg://user:password@localhost:5432/pulsewatch`.
 
 Run the tests:
 
