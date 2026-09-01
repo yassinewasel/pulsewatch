@@ -1,5 +1,7 @@
 # PulseWatch
 
+[![CI](https://github.com/yassinewasel/pulsewatch/actions/workflows/ci.yml/badge.svg)](https://github.com/yassinewasel/pulsewatch/actions/workflows/ci.yml)
+
 PulseWatch is a lightweight web service monitoring application built with FastAPI.
 
 ## Local development
