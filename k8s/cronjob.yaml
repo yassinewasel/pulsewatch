@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pulsewatch-check-all
+  namespace: pulsewatch
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: check-all
+              image: curlimages/curl:8.12.1
+              args:
+                - --fail
+                - --silent
+                - --show-error
+                - --request
+                - POST
+                - http://pulsewatch-api:8000/api/services/check-all
