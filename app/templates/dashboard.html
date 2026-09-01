@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PulseWatch</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>PulseWatch</h1>
+          <p>Lightweight service monitoring</p>
+        </div>
+        <button type="button" onclick="checkAll()">Check all</button>
+      </header>
+
+      <form id="add-service-form">
+        <input name="name" placeholder="Service name" required>
+        <input name="url" type="url" placeholder="https://example.com/health" required>
+        <button type="submit">Add service</button>
+      </form>
+
+      <section class="services">
+        {% for service in services %}
+          {% set latest = service.checks[0] if service.checks else none %}
+          <article>
+            <div class="service-heading">
+              <div>
+                <h2>{{ service.name }}</h2>
+                <a href="{{ service.url }}" target="_blank" rel="noopener noreferrer">{{ service.url }}</a>
+              </div>
+              <span class="status {{ latest.status|lower if latest else 'unknown' }}">
+                {{ latest.status if latest else 'NOT CHECKED' }}
+              </span>
+            </div>
+
+            <dl>
+              <div><dt>HTTP status</dt><dd>{{ latest.status_code if latest and latest.status_code is not none else '—' }}</dd></div>
+              <div><dt>Latency</dt><dd>{{ latest.response_time_ms ~ ' ms' if latest and latest.response_time_ms is not none else '—' }}</dd></div>
+              <div><dt>Last checked</dt><dd>{{ latest.checked_at if latest else 'Never' }}</dd></div>
+            </dl>
+
+            <div class="actions">
+              <button type="button" onclick="checkService({{ service.id }})">Check</button>
+              <button type="button" class="danger" onclick="deleteService({{ service.id }})">Delete</button>
+            </div>
+
+            <details>
+              <summary>Recent history</summary>
+              {% if service.checks %}
+                <ul class="history">
+                  {% for check in service.checks[:10] %}
+                    <li>
+                      <strong class="{{ check.status|lower }}">{{ check.status }}</strong>
+                      <span>{{ check.status_code if check.status_code is not none else check.error_message }}</span>
+                      <span>{{ check.response_time_ms ~ ' ms' if check.response_time_ms is not none else '—' }}</span>
+                      <time>{{ check.checked_at }}</time>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p>No checks yet.</p>
+              {% endif %}
+            </details>
+          </article>
+        {% else %}
+          <p class="empty">No services yet. Add one above.</p>
+        {% endfor %}
+      </section>
+    </main>
+    <script src="{{ url_for('static', path='/app.js') }}"></script>
+  </body>
+</html>
