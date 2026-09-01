@@ -21,6 +21,22 @@ def test_create_list_and_delete_service(client) -> None:
     assert client.get("/api/services").json() == []
 
 
+def test_create_service_rejects_malformed_url(client) -> None:
+    response = create_service(client, url="not-a-valid-url")
+
+    assert response.status_code == 422
+    assert response.status_code != 500
+    assert client.get("/api/services").json() == []
+
+
+def test_create_service_rejects_unsupported_url_scheme(client) -> None:
+    response = create_service(client, url="ftp://example.com")
+
+    assert response.status_code == 422
+    assert response.status_code != 500
+    assert client.get("/api/services").json() == []
+
+
 def test_successful_check_is_stored(client, monkeypatch) -> None:
     service_id = create_service(client).json()["id"]
     monkeypatch.setattr(
