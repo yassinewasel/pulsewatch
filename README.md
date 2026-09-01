@@ -34,4 +34,32 @@ Start the development server:
 uvicorn app.main:app --reload
 ```
 
-The health endpoint is available at <http://127.0.0.1:8000/health>.
+The liveness endpoint is available at <http://127.0.0.1:8000/health>. The readiness
+endpoint at <http://127.0.0.1:8000/ready> also verifies database connectivity.
+
+## Docker Compose
+
+Copy the safe development environment placeholders, build, and start the API and
+PostgreSQL services:
+
+```bash
+cp .env.example .env
+docker compose config
+docker compose build
+docker compose up -d
+```
+
+Open <http://localhost:8000/>. View logs with:
+
+```bash
+docker compose logs -f
+```
+
+Stop the containers without deleting PostgreSQL data:
+
+```bash
+docker compose down
+```
+
+The named `postgres_data` volume persists database data between container restarts.
+Run `docker compose down -v` only when you intentionally want to delete that data.
